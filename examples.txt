@@ -1,0 +1,2 @@
+./iocethtool eth0 ETHTOOL_GSTRINGS 4:1 4: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32: s32:
+./iocethtool eth0 ETHTOOL_GSTATS 4:1 8: 8: 8: 8: 8: 8: 8:
