@@ -1,0 +1,19 @@
+iocethtool [-vh] ETHDEV CMD [FORMAT]*
+ Version 0.0 101120
+ -h --help
+ --list     List known ethtool ioctl names.
+ -v --verbose
+ CMD = number or name of ethtool ioctl.
+       Ex. 0x13, ETHTOOL_GPAUSEPARAM
+ FORMAT = [s|b]N:[V]
+ N = number of bytes
+ V = value
+ s = string, b = bitfield
+
+Examples:
+ Reading ETHTOOL_GPAUSEPARAM
+ $ iocethtool eth0 0x12 4: 4: 4:
+ Setting ETHTOOL_SPAUSEPARAM
+ $ iocethtool eth0 ETHTOOL_SPAUSEPARAM 4:1 4:1 4:1
+ Reading ETHTOOL_GDRVINFO
+ $ iocethtool eth0 0x3 s32: s32:
