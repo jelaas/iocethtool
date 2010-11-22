@@ -34,7 +34,7 @@ struct {
 } conf;
 
 enum {
-	CHUNK_NOP, CHUNK_STRING, CHUNK_SIGNED, CHUNK_BITS
+	CHUNK_NOP, CHUNK_STRING, CHUNK_SIGNED, CHUNK_BITS, CHUNK_DECIMAL
 };
 
 struct chunk {
@@ -45,7 +45,7 @@ struct chunk {
 
 struct ethtool_generic {
 	uint32_t cmd;
-	uint8_t data[1024];
+	uint8_t data[1024*2];
 };
 
 const char *names[]= { "ETHTOOL_GSET",
@@ -167,6 +167,33 @@ static int iocethtool(const char *devname, int cmd, struct jlhead *chunks)
 			printf("\n");
 			continue;
 		}
+		if(c->flags & CHUNK_DECIMAL) {
+			if(c->bytes == 8) {
+				printf("%llu\n", *((uint64_t*)p));
+				p+=8;
+				continue;
+			}
+			if(c->bytes == 4) {
+				printf("%u\n", *((uint32_t*)p));
+				p+=4;
+				continue;
+			}
+			if(c->bytes == 2) {
+				printf("%u\n", *((uint16_t*)p));
+				p+=2;
+				continue;
+			}
+			for(i=0;i<c->bytes;i++) {
+				printf("%02x", *p++);
+			}
+			printf("\n");
+			continue;
+		}
+		if(c->bytes == 8) {
+			printf("%016llx\n", *((uint64_t*)p));
+			p+=8;
+			continue;
+		}
 		if(c->bytes == 4) {
 			printf("%08x\n", *((uint32_t*)p));
 			p+=4;
@@ -191,6 +218,7 @@ int add(struct jlhead *fmtlist, char *fmt)
 	struct chunk *c;
 	char *v;
 	uint32_t ival, *ivalp;
+	uint64_t lival, *livalp;
 	uint16_t *i16p;
 
 	c = malloc(sizeof(struct chunk));
@@ -201,6 +229,10 @@ int add(struct jlhead *fmtlist, char *fmt)
 	}
 	if(*fmt == 'b') {
 		c->flags |= CHUNK_BITS;
+		fmt++;
+	}
+	if(*fmt == 'd') {
+		c->flags |= CHUNK_DECIMAL;
 		fmt++;
 	}
 	c->bytes = atoi(fmt);
@@ -229,6 +261,11 @@ int add(struct jlhead *fmtlist, char *fmt)
 		ival = strtol(v, NULL, 0);
 		ivalp = (uint32_t*)&c->value[0];
 		*ivalp = ival;
+	}
+	if(c->bytes == 8) {
+		lival = strtoll(v, NULL, 0);
+		livalp = (uint64_t*)&c->value[0];
+		*livalp = lival;
 	}
 
 	return 0;
