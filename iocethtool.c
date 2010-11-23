@@ -284,6 +284,7 @@ int main(int argc, char **argv)
 
   if(jelopt(argv, 'h', "help",NULL, &err))
     {
+    usage:
       printf("iocethtool [-vh] ETHDEV CMD [FORMAT]*\n"
 	     " Version 0.1 101122\n"
 	     " -h --help\n"
@@ -321,8 +322,7 @@ int main(int argc, char **argv)
   argc = jelopt_final(argv, &err);
 
   if(argc < 3) {
-	  printf("You need to specify a device.\n");
-	  exit(1);
+	  goto usage;
   }
 
   devname = argv[1];
