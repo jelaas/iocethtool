@@ -286,7 +286,7 @@ int main(int argc, char **argv)
     {
     usage:
       printf("iocethtool [-vh] ETHDEV CMD [FORMAT]*\n"
-	     " Version 0.1 101122\n"
+	     " Version 0.2 110404\n"
 	     " -h --help\n"
 	     " --list     List known ethtool ioctl names.\n"
 	     " -v --verbose\n"
